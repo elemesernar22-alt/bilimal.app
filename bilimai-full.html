@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BilimAI — ҰБТ 2027</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#07090e;--bg2:#0e1117;--bg3:#161b27;
+  --acc:#ff4d6d;--acc2:#ffbe0b;--acc3:#06d6a0;--acc4:#4361ee;
+  --txt:#f0f4ff;--txt2:#8892a4;--txt3:#3d4a5c;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.08);
+  --input:#0e1117;--radius:14px;--subj-color:#ff4d6d
+}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--txt);font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;justify-content:center}
+
+/* ── PHONE SHELL ── */
+.phone{width:390px;height:844px;background:var(--bg);border-radius:44px;border:1.5px solid rgba(255,255,255,0.1);overflow:hidden;position:relative;box-shadow:0 40px 120px rgba(0,0,0,0.8),0 0 0 1px rgba(255,255,255,0.04)}
+.screen{width:100%;height:100%;position:relative;overflow:hidden}
+
+/* ── PAGES ── */
+.page{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;transition:transform .4s cubic-bezier(.4,0,.2,1),opacity .4s ease;scrollbar-width:none}
+.page::-webkit-scrollbar{display:none}
+.page.hidden{transform:translateX(100%);opacity:0;pointer-events:none}
+.page.slide-left{transform:translateX(-30%);opacity:0;pointer-events:none}
+
+/* ── STATUS BAR ── */
+.status-bar{display:flex;justify-content:space-between;align-items:center;padding:14px 24px 0;font-size:12px;font-weight:600;color:var(--txt2)}
+.status-icons{display:flex;gap:6px;align-items:center;font-size:13px}
+
+/* ── SPLASH ── */
+#splash{display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse 100% 80% at 50% 30%,rgba(255,77,109,0.18) 0%,transparent 60%),var(--bg);padding:40px 32px;text-align:center}
+.splash-logo{font-family:'Syne',sans-serif;font-size:42px;font-weight:800;background:linear-gradient(135deg,#fff 30%,var(--acc));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.splash-tag{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--txt2);margin-bottom:48px}
+.splash-img{width:220px;height:220px;background:radial-gradient(circle,rgba(255,77,109,0.15),transparent 70%);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:90px;margin-bottom:48px;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+#splash h2{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;line-height:1.25;margin-bottom:12px}
+#splash h2 span{color:var(--acc)}
+#splash p{font-size:14px;color:var(--txt2);line-height:1.65;margin-bottom:40px}
+.splash-dots{display:flex;gap:6px;justify-content:center;margin-bottom:36px}
+.dot{width:8px;height:8px;border-radius:4px;background:var(--txt3)}
+.dot.active{width:24px;background:var(--acc)}
+
+/* ── BUTTONS ── */
+.btn-full{width:100%;padding:16px;border-radius:var(--radius);font-size:15px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s;border:none}
+.btn-acc{background:linear-gradient(135deg,var(--acc),#c9184a);color:#fff;box-shadow:0 8px 28px rgba(255,77,109,0.35)}
+.btn-acc:hover{transform:translateY(-1px);box-shadow:0 12px 36px rgba(255,77,109,0.45)}
+.btn-acc:active{transform:scale(0.98)}
+.btn-outline{background:transparent;color:var(--txt);border:1.5px solid var(--border2);margin-top:10px}
+.btn-outline:hover{background:var(--card2)}
+
+/* ── AUTH ── */
+.auth-page{min-height:100%;display:flex;flex-direction:column;padding:0 28px 40px}
+.auth-header{display:flex;align-items:center;padding:56px 0 32px;gap:12px}
+.back-btn{width:38px;height:38px;border-radius:10px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--txt2);flex-shrink:0;transition:all .2s}
+.back-btn:hover{background:var(--card2);color:#fff}
+.auth-title-wrap{flex:1}
+.auth-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;line-height:1.2}
+.auth-sub{font-size:13px;color:var(--txt2);margin-top:4px}
+.form-group{margin-bottom:16px}
+.form-label{font-size:12px;font-weight:600;color:var(--txt2);letter-spacing:.5px;margin-bottom:6px;display:block}
+.form-input{width:100%;padding:14px 16px;background:var(--bg3);border:1.5px solid var(--border);border-radius:12px;color:var(--txt);font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:border-color .2s}
+.form-input::placeholder{color:var(--txt3)}
+.form-input:focus{border-color:rgba(255,77,109,0.5)}
+.input-wrap{position:relative}
+.input-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none}
+.input-wrap .form-input{padding-left:42px}
+.eye-btn{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:var(--txt3);padding:4px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--txt3);font-size:12px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.social-btns{display:flex;gap:10px;margin-bottom:20px}
+.social-btn{flex:1;padding:12px;border-radius:12px;background:var(--bg3);border:1.5px solid var(--border);color:var(--txt);font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s}
+.social-btn:hover{background:var(--card2);border-color:var(--border2)}
+.auth-switch{text-align:center;font-size:13px;color:var(--txt2);margin-top:20px}
+.auth-switch a{color:var(--acc);font-weight:600;cursor:pointer;text-decoration:none}
+.auth-switch a:hover{text-decoration:underline}
+.class-select{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px}
+.class-btn{padding:10px 4px;border-radius:10px;background:var(--bg3);border:1.5px solid var(--border);color:var(--txt2);font-size:13px;font-weight:500;cursor:pointer;text-align:center;transition:all .2s;font-family:'Plus Jakarta Sans',sans-serif}
+.class-btn.selected,.class-btn:hover{background:rgba(255,77,109,0.1);border-color:rgba(255,77,109,0.4);color:var(--acc)}
+.checkbox-row{display:flex;align-items:flex-start;gap:10px;margin:16px 0;cursor:pointer}
+.checkbox{width:20px;height:20px;border-radius:6px;flex-shrink:0;background:var(--bg3);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;transition:all .2s;margin-top:1px}
+.checkbox.checked{background:var(--acc);border-color:var(--acc)}
+.checkbox-row span{font-size:12px;color:var(--txt2);line-height:1.6}
+.checkbox-row span a{color:var(--acc)}
+.field-error{font-size:11px;color:#ff6b6b;margin-top:5px;display:none}
+.field-error.show{display:block}
+.form-input.error{border-color:rgba(255,77,109,0.6)}
+
+/* ── TOAST ── */
+.toast{position:absolute;bottom:30px;left:20px;right:20px;background:#0e2a1f;border:1px solid rgba(6,214,160,0.35);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;transform:translateY(80px);opacity:0;transition:all .4s cubic-bezier(.4,0,.2,1);z-index:999;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+.toast-icon{font-size:22px}
+.toast-text{font-size:13px;font-weight:500;color:#6ee7b7}
+
+/* ── HOME ── */
+#home{background:var(--bg)}
+.home-header{padding:16px 24px 20px;background:linear-gradient(180deg,rgba(255,77,109,0.06) 0%,transparent 100%)}
+.home-greeting{font-size:13px;color:var(--txt2);margin-bottom:2px}
+.home-name{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;display:flex;align-items:center;gap:8px}
+.home-name span{font-size:20px}
+.notif-btn{width:38px;height:38px;border-radius:12px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer}
+.xp-card{margin:0 20px 20px;background:linear-gradient(135deg,#1a0a10,#0a0f1e);border:1px solid rgba(255,77,109,0.2);border-radius:20px;padding:20px;position:relative;overflow:hidden}
+.xp-card::before{content:'';position:absolute;top:-40px;right:-40px;width:150px;height:150px;background:radial-gradient(circle,rgba(255,77,109,0.2),transparent 70%);border-radius:50%}
+.xp-label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:rgba(255,77,109,0.7);margin-bottom:8px}
+.xp-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:4px}
+.xp-sub{font-size:12px;color:var(--txt2);margin-bottom:16px}
+.xp-bar-wrap{background:rgba(255,255,255,0.08);border-radius:4px;height:6px;margin-bottom:6px}
+.xp-bar{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--acc),var(--acc2));width:0%;transition:width .8s ease}
+.xp-nums{display:flex;justify-content:space-between;font-size:11px;color:var(--txt3)}
+.xp-nums strong{color:var(--acc2)}
+.section-head{display:flex;justify-content:space-between;align-items:center;padding:0 20px;margin-bottom:12px}
+.section-head h3{font-size:15px;font-weight:700}
+.section-head a{font-size:12px;color:var(--acc);cursor:pointer;font-weight:600}
+.subj-scroll{display:flex;gap:12px;padding:0 20px 4px;overflow-x:auto;scrollbar-width:none;margin-bottom:20px}
+.subj-scroll::-webkit-scrollbar{display:none}
+.subj-chip{flex-shrink:0;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:all .2s;min-width:76px;text-align:center}
+.subj-chip:hover{background:var(--card2);border-color:var(--border2);transform:scale(1.03)}
+.subj-chip.active{background:rgba(255,77,109,0.1);border-color:rgba(255,77,109,0.35)}
+.chip-emoji{font-size:24px}
+.chip-name{font-size:11px;font-weight:600;color:var(--txt2)}
+.chip-prog{font-size:10px;color:var(--txt3)}
+.lesson-cards{display:flex;flex-direction:column;gap:10px;padding:0 20px;margin-bottom:20px}
+.lesson-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s}
+.lesson-card:hover{background:var(--card2);border-color:var(--border2);transform:translateX(3px)}
+.lc-thumb{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.lc-info{flex:1;min-width:0}
+.lc-title{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lc-meta{font-size:11px;color:var(--txt3);margin-top:3px;display:flex;gap:8px}
+.lc-badges{display:flex;gap:5px;flex-shrink:0}
+.badge{font-size:9px;font-weight:700;padding:3px 8px;border-radius:6px;letter-spacing:.3px;text-transform:uppercase}
+.badge-v{background:rgba(255,190,11,0.12);color:#ffbe0b;border:1px solid rgba(255,190,11,0.25)}
+.badge-t{background:rgba(255,77,109,0.12);color:var(--acc);border:1px solid rgba(255,77,109,0.25)}
+.badge-d{background:rgba(6,214,160,0.12);color:var(--acc3);border:1px solid rgba(6,214,160,0.25)}
+.mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 20px;margin-bottom:24px}
+.mini-stat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 10px;text-align:center}
+.ms-num{font-family:'Syne',sans-serif;font-size:20px;font-weight:800}
+.ms-lbl{font-size:10px;color:var(--txt3);margin-top:3px}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav{position:absolute;bottom:0;left:0;right:0;background:rgba(7,9,14,0.96);border-top:1px solid var(--border);display:flex;padding:10px 0 24px;backdrop-filter:blur(20px);z-index:10}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transition:all .2s;padding:4px 0}
+.nav-icon{font-size:22px;transition:transform .2s}
+.nav-lbl{font-size:10px;font-weight:600;color:var(--txt3);transition:color .2s}
+.nav-item.active .nav-lbl{color:var(--acc)}
+.nav-item.active .nav-icon{transform:scale(1.15)}
+.nav-item:hover .nav-icon{transform:scale(1.1)}
+
+/* ── SCROLL PAD ── */
+.scroll-pad{height:110px}
+
+/* ════════════════════════
+   ПӘНДЕР ТІЗІМІ
+════════════════════════ */
+#subjects-list{background:var(--bg)}
+.subjects-header{padding:20px 20px 0;background:linear-gradient(180deg,rgba(255,77,109,0.06),transparent)}
+.subj-search{display:flex;align-items:center;gap:10px;background:var(--bg3);border:1.5px solid var(--border);border-radius:12px;padding:11px 14px;margin-bottom:20px}
+.subj-search input{background:none;border:none;outline:none;color:var(--txt);font-size:14px;flex:1;font-family:'Plus Jakarta Sans',sans-serif}
+.subj-search input::placeholder{color:var(--txt3)}
+.search-icon{font-size:15px;color:var(--txt3)}
+.filter-tabs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;margin-bottom:16px}
+.filter-tabs::-webkit-scrollbar{display:none}
+.ftab{flex-shrink:0;padding:7px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;background:var(--card);border:1px solid var(--border);color:var(--txt2);transition:all .2s}
+.ftab.active{background:rgba(255,77,109,0.12);border-color:rgba(255,77,109,0.35);color:var(--acc)}
+.subjects-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 20px 100px}
+.subj-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px 16px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.subj-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .25s}
+.subj-card:hover{transform:translateY(-3px);border-color:var(--border2)}
+.subj-card:hover::before{opacity:1}
+.subj-card:active{transform:scale(0.97)}
+.sc-emoji{font-size:32px;margin-bottom:10px;display:block}
+.sc-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:6px}
+.sc-count{font-size:11px;color:var(--txt3);margin-bottom:10px}
+.sc-prog-bar{height:4px;background:rgba(255,255,255,0.08);border-radius:2px;margin-bottom:4px}
+.sc-prog-fill{height:100%;border-radius:2px;transition:width 1s ease}
+.sc-prog-num{font-size:10px;font-weight:600}
+
+/* Пән түстері */
+.s-math .sc-prog-fill{background:linear-gradient(90deg,#ff4d6d,#ff8fa3)}.s-math .sc-prog-num{color:#ff4d6d}.s-math::before{background:linear-gradient(135deg,rgba(255,77,109,0.08),transparent)}.s-math:hover{border-color:rgba(255,77,109,0.3)}
+.s-phys .sc-prog-fill{background:linear-gradient(90deg,#4361ee,#748ffc)}.s-phys .sc-prog-num{color:#748ffc}.s-phys::before{background:linear-gradient(135deg,rgba(67,97,238,0.08),transparent)}.s-phys:hover{border-color:rgba(67,97,238,0.3)}
+.s-chem .sc-prog-fill{background:linear-gradient(90deg,#06d6a0,#38f4c4)}.s-chem .sc-prog-num{color:#06d6a0}.s-chem::before{background:linear-gradient(135deg,rgba(6,214,160,0.08),transparent)}.s-chem:hover{border-color:rgba(6,214,160,0.3)}
+.s-bio .sc-prog-fill{background:linear-gradient(90deg,#74b816,#a9e34b)}.s-bio .sc-prog-num{color:#a9e34b}.s-bio::before{background:linear-gradient(135deg,rgba(116,184,22,0.08),transparent)}.s-bio:hover{border-color:rgba(116,184,22,0.3)}
+.s-hist .sc-prog-fill{background:linear-gradient(90deg,#ffbe0b,#ffd43b)}.s-hist .sc-prog-num{color:#ffbe0b}.s-hist::before{background:linear-gradient(135deg,rgba(255,190,11,0.08),transparent)}.s-hist:hover{border-color:rgba(255,190,11,0.3)}
+.s-geo .sc-prog-fill{background:linear-gradient(90deg,#ff6b35,#ff9f7a)}.s-geo .sc-prog-num{color:#ff6b35}.s-geo::before{background:linear-gradient(135deg,rgba(255,107,53,0.08),transparent)}.s-geo:hover{border-color:rgba(255,107,53,0.3)}
+.s-kaz .sc-prog-fill{background:linear-gradient(90deg,#cc5de8,#e599f7)}.s-kaz .sc-prog-num{color:#cc5de8}.s-kaz::before{background:linear-gradient(135deg,rgba(204,93,232,0.08),transparent)}.s-kaz:hover{border-color:rgba(204,93,232,0.3)}
+.s-eng .sc-prog-fill{background:linear-gradient(90deg,#20c997,#63e6be)}.s-eng .sc-prog-num{color:#20c997}.s-eng::before{background:linear-gradient(135deg,rgba(32,201,151,0.08),transparent)}.s-eng:hover{border-color:rgba(32,201,151,0.3)}
+.s-inf .sc-prog-fill{background:linear-gradient(90deg,#3bc9db,#74c0fc)}.s-inf .sc-prog-num{color:#3bc9db}.s-inf::before{background:linear-gradient(135deg,rgba(59,201,219,0.08),transparent)}.s-inf:hover{border-color:rgba(59,201,219,0.3)}
+.s-rus .sc-prog-fill{background:linear-gradient(90deg,#f06595,#faa2c1)}.s-rus .sc-prog-num{color:#f06595}.s-rus::before{background:linear-gradient(135deg,rgba(240,101,149,0.08),transparent)}.s-rus:hover{border-color:rgba(240,101,149,0.3)}
+.s-world .sc-prog-fill{background:linear-gradient(90deg,#e8590c,#ffa94d)}.s-world .sc-prog-num{color:#e8590c}.s-world::before{background:linear-gradient(135deg,rgba(232,89,12,0.08),transparent)}.s-world:hover{border-color:rgba(232,89,12,0.3)}
+.s-law .sc-prog-fill{background:linear-gradient(90deg,#9775fa,#b197fc)}.s-law .sc-prog-num{color:#9775fa}.s-law::before{background:linear-gradient(135deg,rgba(151,117,250,0.08),transparent)}.s-law:hover{border-color:rgba(151,117,250,0.3)}
+.s-art .sc-prog-fill{background:linear-gradient(90deg,#f59f00,#ffe066)}.s-art .sc-prog-num{color:#f59f00}.s-art::before{background:linear-gradient(135deg,rgba(245,159,0,0.08),transparent)}.s-art:hover{border-color:rgba(245,159,0,0.3)}
+.s-lit .sc-prog-fill{background:linear-gradient(90deg,#c2255c,#f783ac)}.s-lit .sc-prog-num{color:#c2255c}.s-lit::before{background:linear-gradient(135deg,rgba(194,37,92,0.08),transparent)}.s-lit:hover{border-color:rgba(194,37,92,0.3)}
+
+/* ════════════════════════
+   ПӘН ІШІНДЕ
+════════════════════════ */
+#subject-detail{background:var(--bg)}
+.detail-hero{padding:0 20px 20px;position:relative;overflow:hidden}
+.detail-hero-bg{position:absolute;inset:0;opacity:.15;background:radial-gradient(ellipse 80% 60% at 50% 0%,var(--subj-color),transparent)}
+.detail-emoji{font-size:52px;margin-bottom:8px;display:block;position:relative;z-index:1}
+.detail-name{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;position:relative;z-index:1;margin-bottom:4px}
+.detail-sub{font-size:13px;color:var(--txt2);position:relative;z-index:1;margin-bottom:16px}
+.detail-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:4px;position:relative;z-index:1}
+.ds-card{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:12px;padding:12px 10px;text-align:center}
+.ds-num{font-family:'Syne',sans-serif;font-size:18px;font-weight:800}
+.ds-lbl{font-size:10px;color:var(--txt3);margin-top:2px}
+.detail-prog{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin:16px 20px;position:relative;z-index:1}
+.dp-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.dp-label{font-size:13px;font-weight:600}
+.dp-pct{font-size:13px;font-weight:700}
+.dp-bar{height:8px;background:rgba(255,255,255,0.08);border-radius:4px}
+.dp-fill{height:100%;border-radius:4px;transition:width 1s ease}
+.topics-section{padding:0 20px 12px}
+.ts-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.ts-head h3{font-family:'Syne',sans-serif;font-size:15px;font-weight:700}
+.ts-head span{font-size:12px;color:var(--acc);cursor:pointer;font-weight:600}
+.topic-item{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px;cursor:pointer;transition:all .22s;display:flex;align-items:center;gap:14px}
+.topic-item:hover{background:var(--card2);border-color:var(--border2);transform:translateX(4px)}
+.topic-num{width:34px;height:34px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;background:rgba(255,255,255,0.07)}
+.topic-info{flex:1;min-width:0}
+.topic-title{font-size:13px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topic-meta{font-size:11px;color:var(--txt3);display:flex;gap:8px}
+.topic-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
+.topic-badges{display:flex;gap:5px}
+.tbadge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:6px;letter-spacing:.3px}
+.tbadge-v{background:rgba(255,190,11,0.12);color:#ffbe0b;border:1px solid rgba(255,190,11,0.25)}
+.tbadge-t{background:rgba(255,77,109,0.12);color:var(--acc);border:1px solid rgba(255,77,109,0.25)}
+.tbadge-d{background:rgba(6,214,160,0.12);color:var(--acc3);border:1px solid rgba(6,214,160,0.25)}
+.tbadge-l{background:rgba(67,97,238,0.12);color:#748ffc;border:1px solid rgba(67,97,238,0.25)}
+.topic-prog-mini{width:40px;height:3px;background:rgba(255,255,255,0.08);border-radius:2px}
+.topic-prog-mini-fill{height:100%;border-radius:2px}
+
+/* ════════════════════════
+   САБАҚ ІШІНДЕ
+════════════════════════ */
+#lesson-detail{background:var(--bg)}
+.video-player{background:#000;aspect-ratio:16/9;width:100%;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.video-thumb{position:absolute;inset:0;background:linear-gradient(135deg,#0a0f1e,#1a0a14);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px}
+.play-btn{width:64px;height:64px;border-radius:50%;background:var(--acc);border:none;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;box-shadow:0 8px 32px rgba(255,77,109,0.45);transition:all .2s}
+.play-btn:hover{transform:scale(1.08)}
+.video-title-lbl{font-size:13px;color:rgba(255,255,255,0.6);font-weight:500}
+.video-controls{position:absolute;bottom:0;left:0;right:0;padding:8px 12px;background:linear-gradient(transparent,rgba(0,0,0,0.8));display:flex;align-items:center;gap:8px}
+.vc-time{font-size:11px;color:rgba(255,255,255,0.6);font-family:monospace}
+.vc-bar{flex:1;height:3px;background:rgba(255,255,255,0.2);border-radius:2px;cursor:pointer}
+.vc-progress{height:100%;width:35%;background:var(--acc);border-radius:2px}
+.vc-icons{display:flex;gap:8px}
+.vc-icon{font-size:14px;cursor:pointer;opacity:.7}
+.lesson-body{padding:16px 20px}
+.lesson-title-big{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;margin-bottom:6px;line-height:1.3}
+.lesson-meta-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.lmeta{font-size:11px;color:var(--txt3);background:var(--card);border:1px solid var(--border);padding:4px 10px;border-radius:8px}
+.lesson-tabs{display:flex;gap:0;background:var(--bg3);border-radius:12px;padding:4px;margin-bottom:16px}
+.ltab{flex:1;padding:9px;text-align:center;font-size:12px;font-weight:600;cursor:pointer;border-radius:9px;color:var(--txt2);transition:all .2s}
+.ltab.active{background:var(--acc);color:#fff}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.desc-block{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px}
+.desc-block h4{font-size:13px;font-weight:700;margin-bottom:8px;color:var(--acc)}
+.desc-block p{font-size:13px;color:var(--txt2);line-height:1.65}
+.formula{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-family:monospace;font-size:15px;text-align:center;color:#fff;margin:10px 0;letter-spacing:.5px}
+.mini-test{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.mt-head{padding:14px 16px;background:rgba(255,77,109,0.08);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.mt-head span{font-size:13px;font-weight:600}
+.mt-timer{background:rgba(255,77,109,0.12);border:1px solid rgba(255,77,109,0.25);color:var(--acc);font-size:12px;font-weight:700;padding:3px 10px;border-radius:8px;font-family:monospace}
+.mt-body{padding:16px}
+.mt-q{font-size:14px;font-weight:500;line-height:1.6;margin-bottom:14px}
+.mt-opts{display:flex;flex-direction:column;gap:8px}
+.mt-opt{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;padding:11px 14px;font-size:13px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:10px;color:var(--txt2)}
+.mt-opt:hover{background:rgba(255,255,255,0.08);color:#fff;border-color:var(--border2)}
+.mt-opt.correct{background:rgba(6,214,160,0.1);border-color:rgba(6,214,160,0.4);color:var(--acc3)}
+.mt-opt.wrong{background:rgba(255,77,109,0.1);border-color:rgba(255,77,109,0.4);color:var(--acc)}
+.mt-letter{width:26px;height:26px;border-radius:7px;flex-shrink:0;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.explain-box{margin-top:12px;padding:12px 14px;background:rgba(6,214,160,0.07);border:1px solid rgba(6,214,160,0.2);border-radius:10px;font-size:12px;color:#6ee7b7;line-height:1.6;display:none}
+
+/* top-bar shared */
+.top-bar{display:flex;align-items:center;gap:12px;padding:14px 20px 16px}
+.top-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800}
+
+@media(max-width:420px){.phone{width:100vw;height:100vh;border-radius:0;border:none}}
+</style>
+</head>
+<body>
+
+<div class="phone">
+<div class="screen">
+
+<!-- ════ SPLASH ════ -->
+<div class="page" id="splash">
+  <div class="splash-img">🎓</div>
+  <div class="splash-logo">BilimAI</div>
+  <div class="splash-tag">ҰБТ 2027 · Дайындық</div>
+  <h2>Білімің — <span>болашағың</span></h2>
+  <p>Видео сабақтар, AI-талдау, тест және ойындар. Барлығы бір жерде.</p>
+  <div class="splash-dots"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+  <button class="btn-full btn-acc" onclick="goTo('register')">Тіркелу →</button>
+  <button class="btn-full btn-outline" onclick="goTo('login')">Кіру</button>
+</div>
+
+<!-- ════ ТІРКЕЛУ ════ -->
+<div class="page hidden" id="register">
+  <div class="auth-page">
+    <div class="auth-header">
+      <div class="back-btn" onclick="goTo('splash')">←</div>
+      <div class="auth-title-wrap">
+        <div class="auth-title">Тіркелу</div>
+        <div class="auth-sub">Тегін аккаунт ашу</div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Аты</label>
+        <div class="input-wrap"><span class="input-icon">👤</span><input class="form-input" id="reg-fname" type="text" placeholder="Айгерім"></div>
+        <div class="field-error" id="err-fname">Атыңызды енгізіңіз</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Тегі</label>
+        <div class="input-wrap"><span class="input-icon">👤</span><input class="form-input" id="reg-lname" type="text" placeholder="Сейітова"></div>
+        <div class="field-error" id="err-lname">Тегіңізді енгізіңіз</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <div class="input-wrap"><span class="input-icon">📧</span><input class="form-input" id="reg-email" type="email" placeholder="email@example.com"></div>
+      <div class="field-error" id="err-remail">Дұрыс email енгізіңіз</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Телефон</label>
+      <div class="input-wrap"><span class="input-icon">📱</span><input class="form-input" id="reg-phone" type="tel" placeholder="+7 (700) 000-00-00"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Сынып</label>
+      <div class="class-select">
+        <div class="class-btn" onclick="selectClass(this,'9')">9</div>
+        <div class="class-btn" onclick="selectClass(this,'10')">10</div>
+        <div class="class-btn selected" onclick="selectClass(this,'11')">11</div>
+        <div class="class-btn" onclick="selectClass(this,'Т')">Т</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Құпия сөз</label>
+      <div class="input-wrap"><span class="input-icon">🔒</span><input class="form-input" id="reg-pass" type="password" placeholder="Кем дегенде 6 таңба"><button class="eye-btn" onclick="togglePass('reg-pass',this)">👁</button></div>
+      <div class="field-error" id="err-pass">Кем дегенде 6 таңба енгізіңіз</div>
+    </div>
+    <div class="checkbox-row" onclick="toggleCheck('agree-check')">
+      <div class="checkbox checked" id="agree-check">✓</div>
+      <span>Мен <a>Пайдаланушы келісімін</a> және <a>Құпиялылық саясатын</a> қабылдаймын</span>
+    </div>
+    <button class="btn-full btn-acc" onclick="doRegister()">Тіркелу →</button>
+    <div class="divider">немесе</div>
+    <div class="social-btns">
+      <button class="social-btn">🇬 Google</button>
+      <button class="social-btn">📘 Facebook</button>
+    </div>
+    <div class="auth-switch">Аккаунтыңыз бар ма? <a onclick="goTo('login')">Кіру</a></div>
+    <div class="scroll-pad"></div>
+  </div>
+</div>
+
+<!-- ════ КІРУ ════ -->
+<div class="page hidden" id="login">
+  <div class="auth-page">
+    <div class="auth-header">
+      <div class="back-btn" onclick="goTo('splash')">←</div>
+      <div class="auth-title-wrap">
+        <div class="auth-title">Кіру</div>
+        <div class="auth-sub">Аккаунтыңызға кіріңіз</div>
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:20px">
+      <label class="form-label">Email</label>
+      <div class="input-wrap"><span class="input-icon">📧</span><input class="form-input" id="log-email" type="email" placeholder="email@example.com"></div>
+      <div class="field-error" id="err-lemail">Дұрыс email енгізіңіз</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" style="display:flex;justify-content:space-between"><span>Құпия сөз</span><a style="color:var(--acc);cursor:pointer;font-weight:600">Ұмыттым?</a></label>
+      <div class="input-wrap"><span class="input-icon">🔒</span><input class="form-input" id="log-pass" type="password" placeholder="Құпия сөзіңіз"><button class="eye-btn" onclick="togglePass('log-pass',this)">👁</button></div>
+      <div class="field-error" id="err-lpass">Құпия сөзді енгізіңіз</div>
+    </div>
+    <div style="height:28px"></div>
+    <button class="btn-full btn-acc" onclick="doLogin()">Кіру →</button>
+    <div class="divider">немесе</div>
+    <div class="social-btns">
+      <button class="social-btn">🇬 Google</button>
+      <button class="social-btn">📘 Facebook</button>
+    </div>
+    <div class="auth-switch">Аккаунтыңыз жоқ па? <a onclick="goTo('register')">Тіркелу</a></div>
+  </div>
+</div>
+
+<!-- ════ БАСТЫ ЭКРАН ════ -->
+<div class="page hidden" id="home">
+  <div class="status-bar">
+    <span id="clock-home">09:41</span>
+    <div class="status-icons">📶 🔋</div>
+  </div>
+  <div class="home-header">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div class="home-greeting">Қайырлы күн! 👋</div>
+        <div class="home-name" id="home-name">Айгерім <span>🎓</span></div>
+      </div>
+      <div class="notif-btn">🔔</div>
+    </div>
+  </div>
+  <div class="xp-card">
+    <div class="xp-label">ҰБТ 2027 · Прогресс</div>
+    <div class="xp-title">ҰБТ-ға 68% дайынсың!</div>
+    <div class="xp-sub">Бүгін 3 сабақ оқысаң 75%-ке жетесің</div>
+    <div class="xp-bar-wrap"><div class="xp-bar" id="xp-bar"></div></div>
+    <div class="xp-nums"><span>680 XP</span><strong>Мақсат: 1000 XP</strong></div>
+  </div>
+  <div class="mini-stats">
+    <div class="mini-stat"><div class="ms-num" style="color:var(--acc2)">12</div><div class="ms-lbl">Бүгінгі сабақ</div></div>
+    <div class="mini-stat"><div class="ms-num" style="color:var(--acc)">86%</div><div class="ms-lbl">Тест нәтижесі</div></div>
+    <div class="mini-stat"><div class="ms-num" style="color:var(--acc3)">7🔥</div><div class="ms-lbl">Күн сайын</div></div>
+  </div>
+  <div class="section-head">
+    <h3>Пәндер</h3>
+    <a onclick="navTo('subjects-list',1)">Барлығы →</a>
+  </div>
+  <div class="subj-scroll">
+    <div class="subj-chip active" onclick="openSubject('math');navTo('subjects-list',1)"><span class="chip-emoji">📐</span><span class="chip-name">Математика</span><span class="chip-prog">72%</span></div>
+    <div class="subj-chip" onclick="openSubject('phys');navTo('subjects-list',1)"><span class="chip-emoji">⚡</span><span class="chip-name">Физика</span><span class="chip-prog">58%</span></div>
+    <div class="subj-chip" onclick="openSubject('chem');navTo('subjects-list',1)"><span class="chip-emoji">🧪</span><span class="chip-name">Химия</span><span class="chip-prog">45%</span></div>
+    <div class="subj-chip" onclick="openSubject('bio');navTo('subjects-list',1)"><span class="chip-emoji">🧬</span><span class="chip-name">Биология</span><span class="chip-prog">61%</span></div>
+    <div class="subj-chip" onclick="openSubject('hist');navTo('subjects-list',1)"><span class="chip-emoji">📜</span><span class="chip-name">Тарих</span><span class="chip-prog">80%</span></div>
+  </div>
+  <div class="section-head"><h3>Соңғы сабақтар</h3><a>Барлығы →</a></div>
+  <div class="lesson-cards">
+    <div class="lesson-card"><div class="lc-thumb" style="background:rgba(255,190,11,0.1)">📐</div><div class="lc-info"><div class="lc-title">Квадрат теңдеулер</div><div class="lc-meta"><span>9-сынып</span><span>·</span><span>24 мин</span></div></div><div class="lc-badges"><span class="badge badge-v">HD</span><span class="badge badge-t">Тест</span></div></div>
+    <div class="lesson-card"><div class="lc-thumb" style="background:rgba(67,97,238,0.1)">⚡</div><div class="lc-info"><div class="lc-title">Ньютон заңдары</div><div class="lc-meta"><span>10-сынып</span><span>·</span><span>31 мин</span></div></div><div class="lc-badges"><span class="badge badge-v">HD</span><span class="badge badge-d">Дайын</span></div></div>
+    <div class="lesson-card"><div class="lc-thumb" style="background:rgba(6,214,160,0.1)">🧪</div><div class="lc-info"><div class="lc-title">Органикалық химия</div><div class="lc-meta"><span>11-сынып</span><span>·</span><span>42 мин</span></div></div><div class="lc-badges"><span class="badge badge-v">HD</span><span class="badge badge-t">Тест</span></div></div>
+    <div class="lesson-card"><div class="lc-thumb" style="background:rgba(255,77,109,0.1)">📜</div><div class="lc-info"><div class="lc-title">Қазақстан тарихы — XX ғ.</div><div class="lc-meta"><span>11-сынып</span><span>·</span><span>38 мин</span></div></div><div class="lc-badges"><span class="badge badge-d">Дайын</span></div></div>
+  </div>
+  <div class="scroll-pad"></div>
+  <div class="bottom-nav" id="home-nav">
+    <div class="nav-item active" onclick="navTo('home',0)"><span class="nav-icon">🏠</span><span class="nav-lbl">Басты</span></div>
+    <div class="nav-item" onclick="navTo('subjects-list',1)"><span class="nav-icon">📚</span><span class="nav-lbl">Пәндер</span></div>
+    <div class="nav-item"><span class="nav-icon">✏️</span><span class="nav-lbl">Тест</span></div>
+    <div class="nav-item"><span class="nav-icon">🎮</span><span class="nav-lbl">Quiz</span></div>
+    <div class="nav-item"><span class="nav-icon">👤</span><span class="nav-lbl">Профиль</span></div>
+  </div>
+</div>
+
+<!-- ════ ПӘНДЕР ТІЗІМІ ════ -->
+<div class="page hidden" id="subjects-list">
+  <div class="status-bar">
+    <span id="clock-subj">09:41</span>
+    <div style="display:flex;gap:6px;font-size:13px">📶 🔋</div>
+  </div>
+  <div class="subjects-header">
+    <div class="top-bar" style="padding-bottom:8px">
+      <div style="flex:1">
+        <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800">Пәндер</div>
+        <div style="font-size:12px;color:var(--txt2);margin-top:2px">15 пән · ҰБТ 2027 бағдарламасы</div>
+      </div>
+    </div>
+    <div class="subj-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search-input" placeholder="Пән іздеу..." oninput="filterSubjects()">
+    </div>
+    <div class="filter-tabs">
+      <div class="ftab active" onclick="setFilter(this,'all')">Барлығы</div>
+      <div class="ftab" onclick="setFilter(this,'inprogress')">Жалғасуда</div>
+      <div class="ftab" onclick="setFilter(this,'done')">Аяқталған</div>
+      <div class="ftab" onclick="setFilter(this,'new')">Жаңа</div>
+      <div class="ftab" onclick="setFilter(this,'fav')">Таңдаулы</div>
+    </div>
+  </div>
+
+  <div class="subjects-grid" id="subjects-grid">
+    <div class="subj-card s-math" id="card-math" data-name="математика" data-prog="72" onclick="openSubject('math')"><span class="sc-emoji">📐</span><div class="sc-name">Математика</div><div class="sc-count">320 сабақ · 1200 тест</div><div class="sc-prog-bar"><div class="sc-prog-fill" style="width:72%"></div></div><div class="sc-prog-num">72%</div></div>
+    <div class="subj-card s-phys" id="card-phys" data-name="физика" data-prog="58" onclick="openSubject('phys')"><span class="sc-emoji">⚡</span><div class="sc-name">Физика</div><div class="sc-count">280 сабақ · 980 тест</div><div class="sc-prog-bar"><div class="sc-prog-fill" style="width:58%"></div></div><div class="sc-prog-num">58%</div></div>
+    <div class="subj-card s-chem" id="card-chem" data-name="химия" data-prog="45" onclick="openSubject('chem')"><span class="sc-emoji">🧪</span><div class="sc-name">Химия</div><div class="sc-count">260 сабақ · 870 тест</div><div class="sc-prog-bar"><div class="sc-prog-fill" style="width:45%"></div></div><div class="sc-prog-num">45%</div></div>
+    <div class="subj-card s-bio" id="card-bio" data-name="биология" data-prog="61" onclick="openSubject('bio')"><span class="sc-emoji">🧬</span><div class="sc-name">Биология</div><div class="sc-count">240 сабақ · 820 тест</div><div class="sc-prog-bar"><div class="sc-prog-fill" style="width:61%"></div></div><div class="sc-prog-num">61%</div></div>
+    <div class="subj-card s-hist" id="card-hist" data-name="қазақстан тарихы тарих" data-prog="80" onclick="openSubject('hist')"><span class="sc-emoji">📜</span><div class="sc-name">Қаз. тарихы</div><div class="sc-count">200 сабақ · 740 тест</div><div class="sc-prog-bar"><div class="sc-prog-fill" style="width:80%"></div></div><div class="sc-prog-num">80%</div></div>
+    <div class="subj-card s-geo" id="card-geo" data-name="география" data-prog="33" onclick="openSubject('geo')"><span class="sc-emoji">🗺️</span><div class="sc-name">География</div><div class="sc-count">180 сабақ · 600 тест</div><div class="sc-prog-bar"><div class="sc-prog-fill" style="width:33%"></div></div><div class="sc-prog-num">33%</div></div>
+    <div class="subj-card s-kaz" id="card-kaz" data-name="қазақ тілі" data-prog="55" onclick="openSubject('kaz')"><span class="sc-emoji">📖</span><div class="sc-name">Қазақ тілі</div><div class="sc-count">190 сабақ · 700 тест</div><div class="sc-prog-bar"><div class="sc-prog-fill" style="width:55%"></div></div><div class="sc-prog-num">55%</div></div>
+    <div class="subj-card s-eng" id="card-eng" data-name="ағылшын тілі english" data-prog="40" onclick="openSubject('eng')"><span class="sc-emoji">🌐</span><div class="sc-name">Ағылшын тілі</div><div class="sc-count">210 сабақ · 780 тест</div><div class="sc-prog-bar"><div class="sc-prog-fill" style="width:40%"></div></div><div class="sc-prog-num">40%</div></div>
+    <div class="subj-card s-inf" id="card-inf" data-name="информатика" data-prog="0" onclick="openSubject('inf')"><span class="sc-emoji">💻</span><div class="sc-name">Информатика</div><div class="sc-count">230 сабақ · 850 тест</div><div class="sc-prog-bar"><div class="sc-prog-fill" style="width:0%"></div></div><div class="sc-prog-num">0%</div></div>
+    <div class="subj-card s-rus" id="card-rus" data-name="орыс тілі русский" data-prog="0" onclick="openSubject('rus')"><span class="sc-emoji">📝</span><div class="sc-name">Орыс тілі</div><div class="sc-count">185 сабақ · 680 тест</div><div class="sc-prog-bar"><div class="sc-prog-fill" style="width:0%"></div></div><div class="sc-prog-num">0%</div></div>
+    <div class="subj-card s-world" id="card-world" data-name="дүниежүзі тарихы всемирная" data-prog="0" onclick="openSubject('world')"><span class="sc-emoji">🌍</span><div class="sc-name">Дүниежүзі тарихы</div><div class="sc-count">175 сабақ · 640 тест</div><div class="sc-prog-bar"><div class="sc-prog-fill" style="width:0%"></div></div><div class="sc-prog-num">0%</div></div>
+    <div class="subj-card s-law" id="card-law" data-name="құқық негіздері адам қоғам" data-prog="0" onclick="openSubject('law')"><span class="sc-emoji">⚖️</span><div class="sc-name">Құқық негіздері</div><div class="sc-count">150 сабақ · 560 тест</div><div class="sc-prog-bar"><div class="sc-prog-fill" style="width:0%"></div></div><div class="sc-prog-num">0%</div></div>
+    <div class="subj-card s-art" id="card-art" data-name="өнер музыка бейнелеу мхт" data-prog="0" onclick="openSubject('art')"><span class="sc-emoji">🎨</span><div class="sc-name">Өнер (МХТ)</div><div class="sc-count">130 сабақ · 480 тест</div><div class="sc-prog-bar"><div class="sc-prog-fill" style="width:0%"></div></div><div class="sc-prog-num">0%</div></div>
+    <div class="subj-card s-lit" id="card-lit" data-name="қазақ әдебиеті әдебиет" data-prog="0" onclick="openSubject('lit')"><span class="sc-emoji">📚</span><div class="sc-name">Қазақ әдебиеті</div><div class="sc-count">160 сабақ · 590 тест</div><div class="sc-prog-bar"><div class="sc-prog-fill" style="width:0%"></div></div><div class="sc-prog-num">0%</div></div>
+    <div class="subj-card" id="card-alg" data-name="алгебра геометрия математика" data-prog="65" onclick="openSubject('alg')" style="border-color:rgba(255,165,0,0.2)"><span class="sc-emoji">📏</span><div class="sc-name" style="color:#ffa94d">Геометрия</div><div class="sc-count">140 сабақ · 520 тест</div><div class="sc-prog-bar"><div class="sc-prog-fill" style="width:65%;background:linear-gradient(90deg,#ffa94d,#ffe066)"></div></div><div class="sc-prog-num" style="color:#ffa94d">65%</div></div>
+  </div>
+
+  <div id="empty-state" style="display:none;text-align:center;padding:40px 20px;color:var(--txt3)">
+    <div style="font-size:40px;margin-bottom:10px">🔍</div>
+    <div style="font-size:14px;font-weight:600;color:var(--txt2)">Пән табылмады</div>
+    <div style="font-size:12px;margin-top:6px">Басқа сөз енгізіп көріңіз</div>
+  </div>
+
+  <div class="bottom-nav" id="subj-nav">
+    <div class="nav-item" onclick="navTo('home',0)"><span class="nav-icon">🏠</span><span class="nav-lbl">Басты</span></div>
+    <div class="nav-item active" onclick="navTo('subjects-list',1)"><span class="nav-icon">📚</span><span class="nav-lbl">Пәндер</span></div>
+    <div class="nav-item"><span class="nav-icon">✏️</span><span class="nav-lbl">Тест</span></div>
+    <div class="nav-item"><span class="nav-icon">🎮</span><span class="nav-lbl">Quiz</span></div>
+    <div class="nav-item"><span class="nav-icon">👤</span><span class="nav-lbl">Профиль</span></div>
+  </div>
+</div>
+
+<!-- ════ ПӘН ІШІНДЕ ════ -->
+<div class="page hidden" id="subject-detail">
+  <div class="status-bar">
+    <span id="clock-det">09:41</span>
+    <div style="display:flex;gap:6px;font-size:13px">📶 🔋</div>
+  </div>
+  <div class="top-bar">
+    <div class="back-btn" onclick="pageBack('subjects-list','subject-detail')">←</div>
+    <div class="top-title" id="detail-title">Математика</div>
+    <div style="margin-left:auto;font-size:20px;cursor:pointer">🔖</div>
+  </div>
+  <div class="detail-hero">
+    <div class="detail-hero-bg" id="detail-hero-bg"></div>
+    <span class="detail-emoji" id="detail-emoji">📐</span>
+    <div class="detail-name" id="detail-name">Математика</div>
+    <div class="detail-sub" id="detail-sub">ҰБТ таңдамалы пән · 11-сынып</div>
+    <div class="detail-stats">
+      <div class="ds-card"><div class="ds-num" id="ds-lessons">320</div><div class="ds-lbl">Сабақ</div></div>
+      <div class="ds-card"><div class="ds-num" id="ds-tests">1200</div><div class="ds-lbl">Тест</div></div>
+      <div class="ds-card"><div class="ds-num" id="ds-done">231</div><div class="ds-lbl">Аяқталды</div></div>
+    </div>
+  </div>
+  <div class="detail-prog">
+    <div class="dp-head"><span class="dp-label">Жалпы прогресс</span><span class="dp-pct" id="dp-pct">72%</span></div>
+    <div class="dp-bar"><div class="dp-fill" id="dp-fill" style="width:72%"></div></div>
+  </div>
+  <div class="topics-section">
+    <div class="ts-head"><h3>Тақырыптар</h3><span>Барлығы →</span></div>
+    <div id="topics-list"></div>
+  </div>
+  <div class="scroll-pad"></div>
+</div>
+
+<!-- ════ САБАҚ ІШІНДЕ ════ -->
+<div class="page hidden" id="lesson-detail">
+  <div class="status-bar" style="background:#000">
+    <span id="clock-les" style="color:#888">09:41</span>
+    <div style="display:flex;gap:6px;font-size:13px;color:#888">📶 🔋</div>
+  </div>
+  <div class="video-player">
+    <div class="video-thumb">
+      <button class="play-btn" onclick="playVideo(this)">▶</button>
+      <div class="video-title-lbl" id="video-title">Квадрат теңдеулер · HD</div>
+    </div>
+    <div class="video-controls">
+      <span class="vc-time">08:24</span>
+      <div class="vc-bar"><div class="vc-progress"></div></div>
+      <span class="vc-time">24:10</span>
+      <div class="vc-icons"><span class="vc-icon">⚙️</span><span class="vc-icon">⛶</span></div>
+    </div>
+  </div>
+  <div class="lesson-body">
+    <div class="top-bar" style="padding:0 0 12px">
+      <div class="back-btn" onclick="pageBack('subject-detail','lesson-detail')">←</div>
+      <div style="flex:1;min-width:0">
+        <div class="lesson-title-big" id="lesson-title">Квадрат теңдеулер</div>
+      </div>
+      <div style="font-size:20px;cursor:pointer">❤️</div>
+    </div>
+    <div class="lesson-meta-row">
+      <span class="lmeta" id="lesson-subj-meta">📐 Математика</span>
+      <span class="lmeta">⏱ 24 мин</span>
+      <span class="lmeta">⭐ 4.9</span>
+    </div>
+    <div class="lesson-tabs">
+      <div class="ltab active" onclick="switchTab('desc',this)">Сабақ</div>
+      <div class="ltab" onclick="switchTab('test',this)">Тест</div>
+      <div class="ltab" onclick="switchTab('notes',this)">Жазба</div>
+    </div>
+    <div class="tab-content active" id="tab-desc">
+      <div class="desc-block"><h4>📌 Тақырып мақсаты</h4><p>Квадрат теңдеулерді шешудің барлық тәсілдерін үйрену: дискриминант формуласы, Виет теоремасы, толық квадратқа шығару.</p></div>
+      <div class="desc-block"><h4>📐 Негізгі формула</h4><div class="formula">ax² + bx + c = 0</div><div class="formula">D = b² − 4ac</div><div class="formula">x = (−b ± √D) / 2a</div></div>
+      <div class="desc-block"><h4>🧠 Виет теоремасы</h4><p>Егер x₁ және x₂ — теңдеудің түбірлері болса:</p><div class="formula">x₁ + x₂ = −b/a</div><div class="formula">x₁ · x₂ = c/a</div></div>
+      <div class="desc-block"><h4>💡 Есте сақта</h4><p>▸ D &gt; 0 → екі нақты түбір<br>▸ D = 0 → бір түбір (x = −b/2a)<br>▸ D &lt; 0 → нақты түбір жоқ</p></div>
+    </div>
+    <div class="tab-content" id="tab-test">
+      <div class="mini-test">
+        <div class="mt-head"><span>Тест · 1/3 сұрақ</span><div class="mt-timer" id="lt-timer">01:30</div></div>
+        <div class="mt-body">
+          <p class="mt-q">x² − 5x + 6 = 0 теңдеуінің түбірлерін тап.</p>
+          <div class="mt-opts">
+            <div class="mt-opt" onclick="answerQ(this,false)"><div class="mt-letter">A</div>x₁=1, x₂=6</div>
+            <div class="mt-opt" onclick="answerQ(this,true)"><div class="mt-letter">B</div>x₁=2, x₂=3</div>
+            <div class="mt-opt" onclick="answerQ(this,false)"><div class="mt-letter">C</div>x₁=−2, x₂=−3</div>
+            <div class="mt-opt" onclick="answerQ(this,false)"><div class="mt-letter">D</div>x₁=1, x₂=−6</div>
+          </div>
+          <div class="explain-box" id="lesson-explain">✓ Дұрыс! D = 25−24 = 1. x = (5±1)/2 → x₁=3, x₂=2. Немесе Виет: 2+3=5, 2·3=6. ✔</div>
+        </div>
+      </div>
+    </div>
+    <div class="tab-content" id="tab-notes">
+      <div class="desc-block" style="margin-bottom:12px">
+        <h4>✏️ Өз жазбаларың</h4>
+        <textarea style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px;color:var(--txt);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;resize:none;outline:none;margin-top:8px;line-height:1.6" rows="5" placeholder="Осы сабақ бойынша жазба қал..."></textarea>
+        <button style="width:100%;margin-top:8px;padding:11px;background:var(--acc);border:none;border-radius:10px;color:#fff;font-weight:600;font-size:13px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">Сақтау</button>
+      </div>
+      <div class="desc-block"><h4>🔖 Бұрын сақталған</h4><p style="font-size:13px;color:var(--txt3);font-style:italic">D формуласын жаттауым керек...</p></div>
+    </div>
+  </div>
+  <div class="scroll-pad"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✅</span>
+  <span class="toast-text" id="toast-msg">Сәтті тіркелдіңіз!</span>
+</div>
+
+</div><!-- /screen -->
+</div><!-- /phone -->
+
+<script>
+// ════ STATE ════
+let currentPage = 'splash';
+let selectedClass = '11';
+let agreed = true;
+let currentFilter = 'all';
+let currentSubj = null;
+
+// ════ SUBJECTS DATA ════
+const SUBJECTS = {
+  math:{name:'Математика',emoji:'📐',color:'#ff4d6d',sub:'ҰБТ таңдамалы · 11-сынып',lessons:320,tests:1200,done:231,prog:72,topics:[{t:'Квадрат теңдеулер',cls:'9-сынып',dur:'24 мин',badges:['v','t'],prog:100,done:true},{t:'Тригонометрия негіздері',cls:'10-сынып',dur:'36 мин',badges:['v','t'],prog:70,done:false},{t:'Туынды және дифференциал',cls:'11-сынып',dur:'48 мин',badges:['v','t','l'],prog:45,done:false},{t:'Интеграл',cls:'11-сынып',dur:'52 мин',badges:['v','t'],prog:20,done:false},{t:'Логарифмдер',cls:'10-сынып',dur:'30 мин',badges:['v','t'],prog:88,done:false},{t:'Векторлар',cls:'10-сынып',dur:'28 мин',badges:['v'],prog:55,done:false}]},
+  phys:{name:'Физика',emoji:'⚡',color:'#748ffc',sub:'ҰБТ таңдамалы · 11-сынып',lessons:280,tests:980,done:163,prog:58,topics:[{t:'Ньютон заңдары',cls:'10-сынып',dur:'31 мин',badges:['v','d'],prog:100,done:true},{t:'Электр өрісі',cls:'11-сынып',dur:'40 мин',badges:['v','t'],prog:60,done:false},{t:'Магнетизм',cls:'11-сынып',dur:'38 мин',badges:['v','t'],prog:30,done:false},{t:'Термодинамика',cls:'10-сынып',dur:'44 мин',badges:['v','t','l'],prog:75,done:false}]},
+  chem:{name:'Химия',emoji:'🧪',color:'#06d6a0',sub:'ҰБТ таңдамалы · 11-сынып',lessons:260,tests:870,done:117,prog:45,topics:[{t:'Органикалық химия',cls:'11-сынып',dur:'42 мин',badges:['v','t'],prog:50,done:false},{t:'Тотығу-тотықсыздану',cls:'10-сынып',dur:'35 мин',badges:['v','t'],prog:40,done:false},{t:'Периодтық жүйе',cls:'9-сынып',dur:'25 мин',badges:['v','d'],prog:100,done:true}]},
+  bio:{name:'Биология',emoji:'🧬',color:'#a9e34b',sub:'ҰБТ таңдамалы · 11-сынып',lessons:240,tests:820,done:147,prog:61,topics:[{t:'Жасуша биологиясы',cls:'10-сынып',dur:'38 мин',badges:['v','t'],prog:80,done:false},{t:'Генетика',cls:'11-сынып',dur:'50 мин',badges:['v','t','l'],prog:55,done:false},{t:'Эволюция теориясы',cls:'11-сынып',dur:'32 мин',badges:['v','t'],prog:40,done:false}]},
+  hist:{name:'Қаз. тарихы',emoji:'📜',color:'#ffbe0b',sub:'Міндетті пән · 1–11 сынып',lessons:200,tests:740,done:160,prog:80,topics:[{t:'Тәуелсіздік тарихы',cls:'11-сынып',dur:'40 мин',badges:['v','d'],prog:100,done:true},{t:'Кеңес дәуірі',cls:'10-сынып',dur:'45 мин',badges:['v','t'],prog:85,done:false},{t:'Алаш қозғалысы',cls:'10-сынып',dur:'36 мин',badges:['v','t'],prog:70,done:false},{t:'Ежелгі Қазақстан',cls:'9-сынып',dur:'30 мин',badges:['v','d'],prog:100,done:true}]},
+  geo:{name:'География',emoji:'🗺️',color:'#ff6b35',sub:'ҰБТ таңдамалы · 11-сынып',lessons:180,tests:600,done:60,prog:33,topics:[{t:'Физикалық география',cls:'9-сынып',dur:'32 мин',badges:['v','t'],prog:60,done:false},{t:'Экономикалық география',cls:'10-сынып',dur:'40 мин',badges:['v','t'],prog:20,done:false}]},
+  kaz:{name:'Қазақ тілі',emoji:'📖',color:'#cc5de8',sub:'Міндетті пән · 1–11 сынып',lessons:190,tests:700,done:105,prog:55,topics:[{t:'Синтаксис',cls:'11-сынып',dur:'28 мин',badges:['v','t'],prog:65,done:false},{t:'Морфология',cls:'10-сынып',dur:'35 мин',badges:['v','t'],prog:50,done:false},{t:'Фонетика',cls:'9-сынып',dur:'22 мин',badges:['v','d'],prog:100,done:true}]},
+  eng:{name:'Ағылшын тілі',emoji:'🌐',color:'#20c997',sub:'Міндетті пән · 1–11 сынып',lessons:210,tests:780,done:84,prog:40,topics:[{t:'Grammar: Tenses',cls:'10-сынып',dur:'36 мин',badges:['v','t'],prog:55,done:false},{t:'Reading & Comprehension',cls:'11-сынып',dur:'44 мин',badges:['v','t','l'],prog:30,done:false},{t:'Vocabulary Building',cls:'9-сынып',dur:'26 мин',badges:['v','d'],prog:100,done:true}]},
+  inf:{name:'Информатика',emoji:'💻',color:'#3bc9db',sub:'ҰБТ таңдамалы · 11-сынып',lessons:230,tests:850,done:0,prog:0,topics:[{t:'Алгоритм негіздері',cls:'9-сынып',dur:'30 мин',badges:['v','t'],prog:0,done:false},{t:'Деректер қорлары',cls:'10-сынып',dur:'38 мин',badges:['v','t'],prog:0,done:false},{t:'Бағдарламалау тілдері',cls:'11-сынып',dur:'45 мин',badges:['v','t','l'],prog:0,done:false},{t:'Желілер және интернет',cls:'10-сынып',dur:'32 мин',badges:['v','t'],prog:0,done:false}]},
+  rus:{name:'Орыс тілі',emoji:'📝',color:'#f06595',sub:'Міндетті пән · 1–11 сынып',lessons:185,tests:680,done:0,prog:0,topics:[{t:'Морфология',cls:'10-сынып',dur:'28 мин',badges:['v','t'],prog:0,done:false},{t:'Синтаксис',cls:'11-сынып',dur:'35 мин',badges:['v','t'],prog:0,done:false},{t:'Орфография',cls:'9-сынып',dur:'24 мин',badges:['v','d'],prog:0,done:false}]},
+  world:{name:'Дүниежүзі тарихы',emoji:'🌍',color:'#e8590c',sub:'ҰБТ таңдамалы · 11-сынып',lessons:175,tests:640,done:0,prog:0,topics:[{t:'Ежелгі өркениеттер',cls:'9-сынып',dur:'32 мин',badges:['v','t'],prog:0,done:false},{t:'Орта ғасыр тарихы',cls:'10-сынып',dur:'38 мин',badges:['v','t'],prog:0,done:false},{t:'ХХ ғасыр тарихы',cls:'11-сынып',dur:'44 мин',badges:['v','t','l'],prog:0,done:false}]},
+  law:{name:'Құқық негіздері',emoji:'⚖️',color:'#9775fa',sub:'ҰБТ таңдамалы · 11-сынып',lessons:150,tests:560,done:0,prog:0,topics:[{t:'Конституциялық құқық',cls:'11-сынып',dur:'36 мин',badges:['v','t'],prog:0,done:false},{t:'Азаматтық құқық',cls:'11-сынып',dur:'40 мин',badges:['v','t'],prog:0,done:false},{t:'Еңбек құқығы',cls:'10-сынып',dur:'30 мин',badges:['v','t'],prog:0,done:false}]},
+  art:{name:'Өнер (МХТ)',emoji:'🎨',color:'#f59f00',sub:'ҰБТ таңдамалы · 11-сынып',lessons:130,tests:480,done:0,prog:0,topics:[{t:'Музыка тарихы',cls:'10-сынып',dur:'28 мин',badges:['v','t'],prog:0,done:false},{t:'Бейнелеу өнері',cls:'9-сынып',dur:'32 мин',badges:['v','t'],prog:0,done:false},{t:'Қазақ халық өнері',cls:'11-сынып',dur:'36 мин',badges:['v','t'],prog:0,done:false}]},
+  lit:{name:'Қазақ әдебиеті',emoji:'📚',color:'#c2255c',sub:'Міндетті пән · 1–11 сынып',lessons:160,tests:590,done:0,prog:0,topics:[{t:'Абай шығармашылығы',cls:'11-сынып',dur:'40 мин',badges:['v','t'],prog:0,done:false},{t:'Мұхтар Әуезов',cls:'10-сынып',dur:'35 мин',badges:['v','t'],prog:0,done:false},{t:'Қазіргі заман әдебиеті',cls:'11-сынып',dur:'30 мин',badges:['v','t','l'],prog:0,done:false}]},
+  alg:{name:'Геометрия',emoji:'📏',color:'#ffa94d',sub:'Міндетті пән · 7–11 сынып',lessons:140,tests:520,done:91,prog:65,topics:[{t:'Үшбұрыштар',cls:'9-сынып',dur:'30 мин',badges:['v','t'],prog:100,done:true},{t:'Шеңбер және дөңгелек',cls:'9-сынып',dur:'28 мин',badges:['v','t'],prog:80,done:false},{t:'Стереометрия',cls:'11-сынып',dur:'44 мин',badges:['v','t','l'],prog:40,done:false}]},
+};
+
+// ════ AUTH NAVIGATION ════
+function goTo(page) {
+  const cur = document.getElementById(currentPage);
+  const next = document.getElementById(page);
+  const goingBack = (page === 'splash');
+  cur.classList.remove('hidden','slide-left');
+  cur.classList.add(goingBack ? 'hidden' : 'slide-left');
+  next.classList.remove('hidden','slide-left');
+  currentPage = page;
+}
+
+// ════ NAV BAR (home ↔ subjects-list) ════
+function navTo(pageId, navIndex) {
+  // Only switch between top-level pages: home, subjects-list
+  const topPages = ['home','subjects-list'];
+  if (!topPages.includes(pageId)) return;
+
+  const cur = document.getElementById(currentPage);
+  const next = document.getElementById(pageId);
+  if (currentPage === pageId) return;
+
+  cur.classList.add('slide-left');
+  next.classList.remove('hidden','slide-left');
+  currentPage = pageId;
+
+  // sync both navbars
+  ['home-nav','subj-nav'].forEach(navId => {
+    const nav = document.getElementById(navId);
+    if (!nav) return;
+    nav.querySelectorAll('.nav-item').forEach((item,i) => item.classList.toggle('active', i === navIndex));
+  });
+
+  // animate xp bar when going home
+  if (pageId === 'home') {
+    setTimeout(() => { const b = document.getElementById('xp-bar'); if(b) b.style.width='68%'; }, 300);
+  }
+}
+
+// ════ PAGE STACK (forward/back within subjects) ════
+function pageForward(from, to) {
+  document.getElementById(from).classList.add('slide-left');
+  document.getElementById(to).classList.remove('hidden','slide-left');
+  currentPage = to;
+}
+function pageBack(to, from) {
+  document.getElementById(from).classList.add('hidden');
+  const toEl = document.getElementById(to);
+  toEl.classList.remove('slide-left','hidden');
+  currentPage = to;
+}
+
+// ════ OPEN SUBJECT ════
+function openSubject(key) {
+  const s = SUBJECTS[key];
+  if (!s) return;
+  currentSubj = key;
+  document.documentElement.style.setProperty('--subj-color', s.color);
+  document.getElementById('detail-title').textContent = s.name;
+  document.getElementById('detail-emoji').textContent = s.emoji;
+  document.getElementById('detail-name').textContent = s.name;
+  document.getElementById('detail-sub').textContent = s.sub;
+  document.getElementById('ds-lessons').textContent = s.lessons;
+  document.getElementById('ds-tests').textContent = s.tests;
+  document.getElementById('ds-done').textContent = s.done;
+  document.getElementById('dp-pct').textContent = s.prog + '%';
+  document.getElementById('dp-pct').style.color = s.color;
+  document.getElementById('dp-fill').style.width = s.prog + '%';
+  document.getElementById('dp-fill').style.background = s.color;
+  document.getElementById('detail-hero-bg').style.background = `radial-gradient(ellipse 80% 60% at 50% 0%, ${s.color}, transparent)`;
+
+  const list = document.getElementById('topics-list');
+  list.innerHTML = s.topics.map((t,i) => {
+    const doneBadge = t.done ? '<span class="tbadge tbadge-d">✓ Дайын</span>' : '';
+    const bs = t.badges.map(b => {
+      if(b==='v') return '<span class="tbadge tbadge-v">HD</span>';
+      if(b==='t') return '<span class="tbadge tbadge-t">Тест</span>';
+      if(b==='l') return '<span class="tbadge tbadge-l">Лайв</span>';
+      if(b==='d') return '<span class="tbadge tbadge-d">Дайын</span>';
+      return '';
+    }).join('');
+    return `<div class="topic-item" onclick="openLesson('${t.t.replace(/'/g,"\\'")}')">
+      <div class="topic-num" style="color:${s.color}">${i+1}</div>
+      <div class="topic-info">
+        <div class="topic-title">${t.t}</div>
+        <div class="topic-meta"><span>${t.cls}</span><span>·</span><span>⏱ ${t.dur}</span></div>
+      </div>
+      <div class="topic-right">
+        <div class="topic-badges">${bs}${doneBadge}</div>
+        <div class="topic-prog-mini"><div class="topic-prog-mini-fill" style="width:${t.prog}%;background:${s.color}"></div></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Navigate from wherever we are to subject-detail
+  const fromPage = currentPage;
+  pageForward(fromPage, 'subject-detail');
+}
+
+// ════ OPEN LESSON ════
+function openLesson(title) {
+  const s = SUBJECTS[currentSubj];
+  document.getElementById('lesson-title').textContent = title;
+  document.getElementById('video-title').textContent = title + ' · HD';
+  document.getElementById('lesson-subj-meta').textContent = s.emoji + ' ' + s.name;
+  document.querySelectorAll('.ltab').forEach((t,i) => t.classList.toggle('active', i===0));
+  document.querySelectorAll('.tab-content').forEach((t,i) => t.classList.toggle('active', i===0));
+  document.querySelectorAll('.mt-opt').forEach(o => { o.classList.remove('correct','wrong'); o.style.pointerEvents=''; });
+  document.getElementById('lesson-explain').style.display='none';
+  pageForward('subject-detail','lesson-detail');
+}
+
+// ════ AUTH HELPERS ════
+function selectClass(el, val) {
+  document.querySelectorAll('.class-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedClass = val;
+}
+function toggleCheck(id) {
+  const el = document.getElementById(id);
+  const c = el.classList.contains('checked');
+  el.classList.toggle('checked', !c);
+  el.textContent = c ? '' : '✓';
+  agreed = !c;
+}
+function togglePass(id, btn) {
+  const inp = document.getElementById(id);
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  btn.textContent = inp.type === 'password' ? '👁' : '🙈';
+}
+function showErr(id, show) { const e=document.getElementById(id); if(e) e.classList.toggle('show',show); }
+function markInput(id, error) { const e=document.getElementById(id); if(e) e.classList.toggle('error',error); }
+function validEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function doRegister() {
+  const fname = document.getElementById('reg-fname').value.trim();
+  const lname = document.getElementById('reg-lname').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pass  = document.getElementById('reg-pass').value;
+  let ok = true;
+  [['reg-fname','err-fname',!fname],['reg-lname','err-lname',!lname],['reg-email','err-remail',!validEmail(email)],['reg-pass','err-pass',pass.length<6]].forEach(([inp,err,bad]) => { markInput(inp,bad); showErr(err,bad); if(bad) ok=false; });
+  if (!ok) return;
+  document.getElementById('home-name').innerHTML = fname + ' <span>🎓</span>';
+  showToast('Сәтті тіркелдіңіз! Қош келдіңіз 🎉');
+  setTimeout(() => { goTo('home'); setTimeout(() => { document.getElementById('xp-bar').style.width='68%'; }, 400); }, 600);
+}
+
+function doLogin() {
+  const email = document.getElementById('log-email').value.trim();
+  const pass  = document.getElementById('log-pass').value;
+  let ok = true;
+  [['log-email','err-lemail',!validEmail(email)],['log-pass','err-lpass',pass.length<1]].forEach(([inp,err,bad]) => { markInput(inp,bad); showErr(err,bad); if(bad) ok=false; });
+  if (!ok) return;
+  const name = email.split('@')[0];
+  document.getElementById('home-name').innerHTML = name.charAt(0).toUpperCase()+name.slice(1)+' <span>🎓</span>';
+  showToast('Сәтті кірдіңіз! Қош келдіңіз 👋');
+  setTimeout(() => { goTo('home'); setTimeout(() => { document.getElementById('xp-bar').style.width='68%'; }, 400); }, 600);
+}
+
+// ════ LESSON UTILS ════
+function playVideo(btn) { btn.textContent='⏸'; btn.style.background='#888'; }
+function switchTab(id, el) {
+  document.querySelectorAll('.ltab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+}
+function answerQ(el, correct) {
+  document.querySelectorAll('.mt-opt').forEach(o => o.style.pointerEvents='none');
+  el.classList.add(correct ? 'correct' : 'wrong');
+  if (!correct) document.querySelectorAll('.mt-opt').forEach(o => { if(o.getAttribute('onclick')&&o.getAttribute('onclick').includes('true')) o.classList.add('correct'); });
+  document.getElementById('lesson-explain').style.display='block';
+}
+
+// ════ SEARCH & FILTER ════
+function setFilter(el, filter) {
+  currentFilter = filter;
+  document.querySelectorAll('.ftab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  filterSubjects();
+}
+function filterSubjects() {
+  const q = (document.getElementById('search-input').value||'').toLowerCase().trim();
+  const cards = document.querySelectorAll('.subj-card');
+  let n = 0;
+  cards.forEach(card => {
+    const name = card.dataset.name||'';
+    const prog = parseInt(card.dataset.prog)||0;
+    const matchSearch = q==='' || name.includes(q);
+    let matchFilter = true;
+    if(currentFilter==='inprogress') matchFilter = prog>0&&prog<100;
+    else if(currentFilter==='done') matchFilter = prog===100;
+    else if(currentFilter==='new') matchFilter = prog===0;
+    else if(currentFilter==='fav') matchFilter = ['math','hist','alg'].includes(card.id.replace('card-',''));
+    const show = matchSearch && matchFilter;
+    card.style.display = show?'':'none';
+    if(show) n++;
+  });
+  document.getElementById('empty-state').style.display = n===0?'block':'none';
+}
+
+// ════ CLOCK ════
+function updateClocks() {
+  const n = new Date();
+  const t = String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
+  ['clock-home','clock-subj','clock-det','clock-les'].forEach(id => { const e=document.getElementById(id); if(e) e.textContent=t; });
+}
+updateClocks();
+setInterval(updateClocks, 10000);
+
+// ════ LESSON TIMER ════
+let lt = 90;
+setInterval(() => {
+  if(lt>0){ lt--; const e=document.getElementById('lt-timer'); if(e) e.textContent='0'+Math.floor(lt/60)+':'+String(lt%60).padStart(2,'0'); }
+}, 1000);
+
+// ════ SUBJECT CHIPS (home) ════
+document.querySelectorAll('.subj-chip').forEach(c => {
+  c.addEventListener('click', function() {
+    document.querySelectorAll('.subj-chip').forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
